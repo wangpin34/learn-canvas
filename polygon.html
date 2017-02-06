@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="D:/workspace/I.jpg" type="image/x-icon">
+<title>polygon</title>
+<style>
+    #myCanvas {
+        width: 400px;
+        height: 400px;
+        border: 1px solid grey;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="myCanvas"></canvas>
+
+<form id="polygon-settings" name="polygon-settings">
+    <ul>
+        <li><input name="fill-color" type="text" placeholder="fill color" required value="#b0e0e6"/></li>
+        <li><input name="stroke-color" type="text" placeholder="stroke color" required value="#000000"/></li>
+        <li><input name="stroke-width" type="number" placeholder="stroke width" required value="5"/></li>
+        <li><input name="side-number" type="number" placeholder="side number" required value="5"/></li>
+        <li><input name="angle" type="number" placeholder="angle" required value="50"/></li>
+        <li><input type="submit"/></li>
+    </ul>
+</form>
+
+</body>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function(){
+
+        var canvas = document.getElementById('myCanvas');
+        var ctx = canvas.getContext('2d');
+        var posX = 150;
+        var posY = 60;
+        ctx.fillStyle = '#b0e0e6';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 5;
+
+        var polygon = function(c, n, x, y, r, angle, counterclockwise) {
+            angle = angle || 0;
+            counterclockwise = counterclockwise || false;
+
+            c.moveTo( x + r * Math.sin(angle), y - r * Math.cos(angle));
+            var delta = 2 * Math.PI / n;
+
+            for(var i = 1; i < n; i++){
+                angle += counterclockwise?  - delta: delta;
+                c.lineTo(x + r * Math.sin(angle), y - r * Math.cos(angle));
+            }
+            c.closePath();
+        }
+
+        var form = document.getElementById('polygon-settings');
+        form.onsubmit = function(){
+            var fillColor = form['fill-color'].value;
+            var strokeColor = form['stroke-color'].value;
+            var strokeWidth = parseInt(form['stroke-width'].value);
+            var sideNum = parseInt(form['side-number'].value);
+            var angle = parseInt(form['angle'].value);
+            ctx.fillStyle = fillColor;
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = strokeWidth;
+            //Clear canvas for redraw
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.beginPath();
+            polygon(ctx, sideNum, posX, posY, angle);
+            ctx.fill();
+            ctx.stroke();
+            return false;
+        }
+    });
+</script>
+</html>
