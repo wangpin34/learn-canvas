@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="./i.icon" type="image/x-icon">
+<title>cutout</title>
+<style>
+    canvas {
+        display: inline-block;
+    }
+
+    div#main {
+        position: relative;
+        display: inline-block;
+        padding: 0;
+        min-width: 100px;
+        min-height: 100px;
+    }
+
+</style>
+</head>
+<body>
+
+<div id="main">
+    <canvas id="operation-canvas"></canvas>
+</div>
+<canvas id="result-canvas"></canvas
+
+</body>
+<script type="text/javascript" src="./assets/javascript/disable-non-app-features.js" async></script>
+<script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', function(){
+        var fish = document.createElement('img'); // 使用 DOM HTMLImageElement
+        fish.src = './assets/images/house-in-green.jpg';
+        fish.alt = 'alt text';
+        fish.style.display = 'none';
+        document.body.appendChild(fish);
+        var operationCanvas = document.getElementById('operation-canvas');
+        var resultCanvas = document.getElementById('result-canvas');
+
+        var drawImg = function(canvas, img){
+            canvas.width = img.clientWidth || img.width;
+            canvas.height = img.clientHeight || img.height;
+            canvas.getContext('2d').drawImage(img, 0, 0);
+        }
+
+        var drawSelectionBox = function(ctx, x, y, width, height){
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + width, y);
+            ctx.lineTo(x + width, y + height);
+            ctx.lineTo(x, y + height);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        var clearCanvas = function(canvas){
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        fish.onload =  function(){
+            drawImg(operationCanvas, this);
+        }
+
+        operationCanvas.addEventListener('mousedown', function(event){
+            var operationCanvasCtx = operationCanvas.getContext('2d');
+            clearCanvas(operationCanvas);
+            drawImg(operationCanvas, fish);
+            var fromX = endX = event.x;
+            var fromY = endY = event.y;
+            var handleMove = function(event){
+                clearCanvas(operationCanvas);
+                drawImg(operationCanvas, fish);
+                endX = event.x;
+                endY = event.y;
+                drawSelectionBox(operationCanvasCtx, fromX, fromY, endX - fromX, endY - fromY);
+            }
+
+            var handlePicker = function(){
+                operationCanvas.removeEventListener('mousemove', handleMove);
+                operationCanvas.removeEventListener('mouseleave', handlePicker);
+                operationCanvas.removeEventListener('mouseup', handlePicker);
+                clearCanvas(resultCanvas);
+                var width = endX - fromX;
+                var height = endY - fromY;
+                if(width == 0 || height == 0){
+                    return;
+                }
+                resultCanvas.width = width;
+                resultCanvas.height = height;
+                var resultCanvasCtx = resultCanvas.getContext('2d');
+                var imgData = operationCanvasCtx.getImageData(fromX, fromY, width, height);
+                resultCanvasCtx.putImageData(imgData, 0, 0);
+
+            }
+
+            operationCanvas.addEventListener('mousemove', handleMove);
+            operationCanvas.addEventListener('mouseleave', handlePicker);
+            operationCanvas.addEventListener('mouseup', handlePicker);
+        })
+
+    })
+</script>
+</html>
