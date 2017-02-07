@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="./i.icon" type="image/x-icon">
+<title>text</title>
+<style>
+    #myCanvas {
+        width: 800px;
+        height: 800px;
+        border: 1px solid grey;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="myCanvas"></canvas>
+
+<form id="settings" name="settings">
+    <ul>
+        <li><input name="text" type="text" maxlength="10" placeholder="Input text here" required/></li>
+        <li>
+            <label>Fill</label>
+            <input name="fill-color" type="text" placeholder="fill color" required value="#b0e0e6"/></li>
+        <li>
+            <label>Font</label>
+            <input name="font-size" type="number" placeholder="font size" required value="40" style="width:40px;"/><span>px<span>
+            <input name="font-family" type="text" placeholder="font family" required value="serif" style="width:40px;"/>
+        </li>
+        <li>
+            <label>Horizontal Align</label>
+            <select name="horizontal-align">
+                <option selected>start</option>
+                <option>end</option>
+                <option>left</option>
+                <option>right</option>
+                <option>center</option>
+            </select>
+        </li>
+        <li>
+            <label>Vertical Align</label>
+            <select name="vertical-align">
+                <option>top</option>
+                <option>hanging</option>
+                <option>middle</option>
+                <option selected>alphabetic</option>
+                <option>ideographic</option>
+                <option>bottom</option>
+            </select>
+        </li>
+        <li>
+            <label>Direction</label>
+            <select name="direction">
+                <option>ltr</option>
+                <option>rtl</option>
+                <option selected>inherit</option>
+            </select>
+        </li>
+        <li><input type="submit"/></li>
+    </ul>
+</form>
+
+</body>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function(){
+
+        var canvas = document.getElementById('myCanvas');
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#b0e0e6';
+        ctx.font = '40px serif';
+        ctx.textAlign = 'start';
+        ctx.shadowOffsetY = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.fillText('我是文字', 0, 35);
+
+        var form = document.getElementById('settings');
+        form.onsubmit = function(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            var text = form['text'].value;
+            var fillColor = form['fill-color'].value;
+            var fontSize = form['font-size'].value;
+            var fontFamily = form['font-family'].value;
+            var horizontalAlign = form['horizontal-align'].value;
+            var verticalAlign = form['vertical-align'].value;
+            var direction = form['direction'].value;
+
+            ctx.fill = fillColor;
+            ctx.font = fontSize + ' ' + fontFamily;
+            ctx.textAlign = horizontalAlign;
+            ctx.textBaseline = verticalAlign;
+            ctx.direction = direction;
+
+            ctx.fillText(text, 0, 0);
+
+            return false;
+        };
+
+    });
+</script>
+</html>
