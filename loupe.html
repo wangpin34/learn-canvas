@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="./i.icon" type="image/x-icon">
+<title>loupe</title>
+<style>
+    canvas {
+        display: inline-block;
+    }
+
+    div#main {
+        position: relative;
+        display: inline-block;
+        padding: 0;
+        min-width: 100px;
+        min-height: 100px;
+    }
+
+</style>
+</head>
+<body>
+
+<div id="main">
+    <canvas id="canvas"></canvas>
+</div>
+<canvas id="result-canvas"></canvas
+
+</body>
+<script type="text/javascript" src="./assets/javascript/disable-non-app-features.js" async></script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function(){
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        var img = document.createElement('img');
+        img.src = './assets/images/house-in-green.jpg';
+        img.style.display = 'none';
+        document.body.appendChild(img);
+
+        img.onload = function(){
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(this, 0, 0);
+        }
+
+        var drawLoupe = function(ctx, x, y){
+            var r = 5;
+            var beginAngle = 0;
+            var endAngle = 2 * Math.PI;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x, y, 70, beginAngle, endAngle, false);
+            ctx.stroke();
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(x, y, 72, beginAngle, endAngle, false);
+            ctx.stroke();
+        }
+
+        var redraw = function(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+        }
+
+        canvas.addEventListener('mouseover', function(event){
+            drawLoupe(ctx, event.x, event.y);
+
+            canvas.addEventListener('mousemove', function(event){
+                redraw();
+                drawLoupe(ctx, event.x, event.y);
+            })
+        })
+    });
+</script>
+</html>
