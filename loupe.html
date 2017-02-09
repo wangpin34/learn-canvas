@@ -77,7 +77,7 @@
             ctx.arc(2 * r, 2 * r, 2 * r, beginAngle, endAngle, false);
             ctx.clip();
 
-            ctx.drawImage(img, x - r , y - r, size, size, 0, 0, 2 * size, 2 * size);
+            ctx.drawImage(img, /*Start clip from X coordinate*/x - r , /*Start clip from Y coordinate*/y - r, /*Clip image width*/size, /*Clip image height*/size, /*The X coordinate that start draw*/0, /*The Y coordinate that start draw*/0, /*The width of the drawing rectangle*/2 * size, /*The height of the drawing rectangle*/2 * size);
 
         }
 
