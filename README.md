@@ -6,3 +6,4 @@ learn html5 canvas
 * [Polygon](http://cdn.rawgit.com/wangpin34/learn-canvas/master/polygon.html)
 * [Text](http://cdn.rawgit.com/wangpin34/learn-canvas/master/text.html)
 * [Image Picker](http://cdn.rawgit.com/wangpin34/learn-canvas/master/cutout.html)
+* [Image Loupe](http://cdn.rawgit.com/wangpin34/learn-canvas/master/loupe.html)
