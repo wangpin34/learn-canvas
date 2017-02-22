@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="./i.icon" type="image/x-icon">
+<title>circle progress bar</title>
+</head>
+<body>
+
+<canvas id="auto"></canvas>
+Start Angle:<label id="start"></label>
+End Angle:<Label id="end"></label>
+</body>
+<script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', function(){
+      var startAngle = document.getElementById('start');
+      var endAngle = document.getElementById('end');
+      var autoBar = document.getElementById('auto');
+      var ctx = autoBar.getContext('2d');
+      ctx.strokeStyle = '#4682b4';
+      ctx.lineWidth = 10;
+      var size = autoBar.width = autoBar.height = 200;
+      var middle = { x: size / 2, y: size / 2 };
+      var radius = size / 2;
+
+      var from = end = -0.5 * Math.PI;
+      var last = 1.5 * Math.PI;
+      
+      var i = setInterval(function(){
+        if(end >= last){
+         clearInterval(i);
+        }
+        ctx.clearRect(0, 0, size, size);
+        ctx.beginPath();
+        end += 0.01 * Math.PI;
+        ctx.arc(middle.x, middle.y, radius, from, end, false);
+        ctx.stroke();
+
+        startAngle.innerText = Math.ceil( (from / ( 2 * Math.PI ) * 360) ) + '\'';
+        endAngle.innerText = Math.ceil( (end / ( 2 * Math.PI ) * 360) ) + '\'';
+      }, 50);
+    });
+
+</script>
+</html>
