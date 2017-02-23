@@ -5,42 +5,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="./i.icon" type="image/x-icon">
 <title>circle progress bar</title>
+<style>
+  canvas {
+    width: 200px;
+    height: 200px;
+  }
+</style>
 </head>
 <body>
-
-<canvas id="auto"></canvas>
-Start Angle:<label id="start"></label>
-End Angle:<Label id="end"></label>
+<canvas id="general-bar"></canvas>
+<canvas id="with-text-bar"></canvas>
+<canvas id="with-background"></canvas>
 </body>
 <script type="text/javascript">
 
-    document.addEventListener('DOMContentLoaded', function(){
-      var startAngle = document.getElementById('start');
-      var endAngle = document.getElementById('end');
-      var autoBar = document.getElementById('auto');
-      var ctx = autoBar.getContext('2d');
-      ctx.strokeStyle = '#4682b4';
-      ctx.lineWidth = 10;
-      var size = autoBar.width = autoBar.height = 200;
-      var middle = { x: size / 2, y: size / 2 };
-      var radius = size / 2;
-
-      var from = end = -0.5 * Math.PI;
-      var last = 1.5 * Math.PI;
+    var canvasSize = 200;
+    var dimension = canvasSize * 0.6;
+    var interval = 100;
+    function drawGeneralProgress(canvas, color, lineWidth, radius, startAngle, counterClockwise, duration, withText, backGroundColor){
       
+      var ctx = canvas.getContext('2d');
+      var middle = { x: canvas.width / 2, y: canvas.height /2 };
+      var endAngle = 2 * Math.PI - Math.abs(startAngle);
+      var nextAngle = startAngle;
+      var speed = interval/duration * 2 * Math.PI;
       var i = setInterval(function(){
-        if(end >= last){
-         clearInterval(i);
+        if(nextAngle >= endAngle){
+          clearInterval(i);
+          return;
         }
-        ctx.clearRect(0, 0, size, size);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if(backGroundColor){
+          ctx.fillStyle = backGroundColor;
+          ctx.rect(0, 0, canvas.width, canvas.height);
+          ctx.fill();
+        }
+
         ctx.beginPath();
-        end += 0.01 * Math.PI;
-        ctx.arc(middle.x, middle.y, radius, from, end, false);
+        nextAngle += speed;
+        ctx.arc(middle.x, middle.y, radius, startAngle, nextAngle, counterClockwise);
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = color;
         ctx.stroke();
 
-        startAngle.innerText = Math.ceil( (from / ( 2 * Math.PI ) * 360) ) + '\'';
-        endAngle.innerText = Math.ceil( (end / ( 2 * Math.PI ) * 360) ) + '\'';
-      }, 50);
+        if(withText){
+          var percent = Math.floor( 100 * (nextAngle - startAngle) / (2 * Math.PI) ) + '%';
+          ctx.fillStyle = '#1e88e5';
+          ctx.font = '30px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(percent, middle.x, middle.y);
+        }
+        
+      }, interval);
+
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      var generalBar = document.getElementById('general-bar');
+      var textBar = document.getElementById('with-text-bar');
+      var bgColorBar = document.getElementById('with-background');
+      document.querySelectorAll('canvas').forEach(function(canvas){
+        canvas.width = canvas.height = canvasSize;
+      })
+
+      drawGeneralProgress(generalBar,  '#4682b4', 5, dimension /2 , -0.5 * Math.PI, false, 3000);
+      drawGeneralProgress(textBar,  '#4682b4', 5, dimension /2 , -0.5 * Math.PI, false, 3000, true);
+      drawGeneralProgress(bgColorBar,  '#4682b4', 5, dimension /2 , -0.5 * Math.PI, false, 3000, true, '#9FA8DA');
     });
 
 </script>
